@@ -56,6 +56,13 @@ set_target_properties(
 )
 
 
+add_library( # 设置生成的动态库的名字,最终生成的库为libcalUtil.so
+        CImageFormatUtil
+        #动态库,如果想生成静态库使用STATIC.
+        SHARED
+        #提供你要编译成库的源文件.
+        src/main/cpp/CImageFormatUtil.c )
+
 
 add_library( # 设置生成的动态库的名字,最终生成的库为libcalUtil.so
              CImageUtil
@@ -72,9 +79,15 @@ find_library( # Sets the name of the path variable.
               # Specifies the name of the NDK library that
               # you want CMake to locate.
               log )
+target_link_libraries(
+        CImageFormatUtil
+        yuv
+        ${log-lib}
+)
 
 target_link_libraries( # Specifies the target library.
         CImageUtil
+        CImageFormatUtil
         yuv
         audio_preprocessing
         mediacore
@@ -82,4 +95,6 @@ target_link_libraries( # Specifies the target library.
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )
+
+
 

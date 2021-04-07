@@ -7,7 +7,7 @@
 //加入libyuv库需要的头文件
 
 #include "libyuv.h"
-
+#include "CImageFormatUtil.h"
 
 #define max(x,y)  (x>y?x:y)
 #define min(x,y)  (x<y?x:y)
@@ -175,8 +175,8 @@ JNIEXPORT void JNICALL Java_com_cmbc_av_jni_ImageFormatUtils_ARGBToNV21
 {
     uint8_t* srcFrame = (uint8_t*) (*env)->GetByteArrayElements(env, src_argb, 0);
 
-    uint8_t* dst_y=(uint8_t*) (*env)->GetByteArrayElements(env, ybuffer, 0);
-    uint8_t* dst_uv=(uint8_t*) (*env)->GetByteArrayElements(env, uvbuffer, 0);
+    uint8_t* dst_y = (uint8_t*) (*env)->GetByteArrayElements(env, ybuffer, 0);
+    uint8_t* dst_uv = (uint8_t*) (*env)->GetByteArrayElements(env, uvbuffer, 0);
 
 /*
  * int ARGBToNV21(const uint8_t* src_argb, //原始ARGB字节流
@@ -198,7 +198,10 @@ JNIEXPORT void JNICALL Java_com_cmbc_av_jni_ImageFormatUtils_ARGBToNV21
                    int width,
                    int height);
     */
-    uint8_t* dst_bgra = malloc(width*height*4);
+
+    //uint8_t* dst_bgra = malloc(width*height*4);
+    ConvertARGBToNV21(srcFrame, src_stride, dst_y, width, dst_uv, width, width, height);
+    /*
     //ARGBToBGRA(srcFrame, src_stride, dst_bgra, src_stride, width, height);
     ARGBToABGR(srcFrame, src_stride, dst_bgra, src_stride, width, height);
     //ARGBToRGBA(srcFrame, src_stride, dst_bgra, src_stride, width, height);
@@ -210,15 +213,11 @@ JNIEXPORT void JNICALL Java_com_cmbc_av_jni_ImageFormatUtils_ARGBToNV21
             width,
             width,
             height);
+            */
     //remember release
-    (*env)->ReleaseByteArrayElements(env, src_argb, (jbyte*)srcFrame, 0);
+    (*env)->ReleaseByteArrayElements(env, src_argb, (jbyte*)srcFrame, 0);//这个参数传不传都行,因为客户端没用到
     (*env)->ReleaseByteArrayElements(env, ybuffer, (jbyte*)dst_y, 0);
     (*env)->ReleaseByteArrayElements(env, uvbuffer, (jbyte*)dst_uv, 0);
-    if(dst_bgra != NULL)
-    {
-        free(dst_bgra);
-        dst_bgra = NULL;
-    }
 }
 
 JNIEXPORT void JNICALL Java_com_cmbc_av_jni_ImageFormatUtils_ARGBIntToNV21
