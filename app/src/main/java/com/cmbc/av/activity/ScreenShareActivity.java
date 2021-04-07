@@ -618,7 +618,7 @@ public class ScreenShareActivity extends AbsActivity<ScreenShareControl, ScreenS
                 } else {
 
                     long tmpBpStartTime = System.currentTimeMillis();
-
+                    long tmpBpendTime;
                     final Image.Plane[] planes = image.getPlanes();
                     int width = image.getWidth();
                     int height = image.getHeight();
@@ -626,8 +626,8 @@ public class ScreenShareActivity extends AbsActivity<ScreenShareControl, ScreenS
 
                     //将image数据放到byte[]中
                     byte[] rgbaArray = new byte[imgBuffer.capacity()];
-                    //imgBuffer.get(rgbaArray); //将ByteBuffer中的数据copy到byte[]
-                    int pixelStride = planes[0].getPixelStride();//相邻像素之间的间隔,大小为bytesPerPixel
+                    imgBuffer.get(rgbaArray);  //将ByteBuffer中的数据copy到byte[]
+                    int pixelStride = planes[0].getPixelStride(); //相邻像素之间的间隔,大小为bytesPerPixel
                     int rowStride = planes[0].getRowStride();    //两行开始像素之间的间隔,大小: width*bytesPerPixel
                     Log.e("TAG", "hello pixelStride,rowStride=" + pixelStride + "," + rowStride);
                     int rowPadding = rowStride - pixelStride * width; //当前行的最后一个像素到下一行的第一个像素的填充量:单位byte
@@ -635,9 +635,8 @@ public class ScreenShareActivity extends AbsActivity<ScreenShareControl, ScreenS
                     int aWidth = width + rowPadding / pixelStride;
 
 
-
                     //下面是生成bitmap的代码,将废弃
-
+                    /*
                     Bitmap tmp = Bitmap.createBitmap(aWidth, height, Bitmap.Config.ARGB_8888);
                     Log.e("TAG", "hello bimap width,height=" + tmp.getWidth() + "," + tmp.getHeight());
 
@@ -649,11 +648,12 @@ public class ScreenShareActivity extends AbsActivity<ScreenShareControl, ScreenS
                     //sendBitmap = ImageUtils.zoomBitmap4Color(Color.WHITE, tmp, getControl().getAnychat().videoWidth, getControl().getAnychat().videoHeight);
                     long tmpBpendTime = System.currentTimeMillis();
                     Log.e(TAG, "bitmap takes time = " + (tmpBpendTime- tmpBpStartTime));//takes time 20 ms
+                     */
 
 
-                    //将bitmap保存成文件
+                    //将bitmap保存成文件,仅用于测试
 
-                    if (test == -1) {
+                    if (0 == 1) {
                         String dir = Environment.getExternalStorageDirectory().getAbsolutePath();
                         String fileName = "/original_bitmap.jpg";
                         String savePath = dir.concat(fileName);
@@ -672,37 +672,18 @@ public class ScreenShareActivity extends AbsActivity<ScreenShareControl, ScreenS
                     test++;
 
                     //将bitmap rgb转成yuv,该做法不够简洁,将废弃
-
-                    ByteBuffer buffer = ByteBuffer.allocate(tmp.getByteCount());
-                    tmp.copyPixelsToBuffer(buffer);
-                    byte[] argbArray = buffer.array();
-
-                    /*
-                    byte[] yuvData = new byte[tmp.getWidth() * tmp.getHeight() * 3 / 2];
-                    tmpBpStartTime = System.currentTimeMillis();
-
-
-                    //ImageFormatUtils.rgbToYuv(buffer.array(),tmp.getWidth(),tmp.getHeight(),yuvData);
-                    tmpBpendTime = System.currentTimeMillis();
-                    Log.e("TAG", "hello rgb To Yuv consume:" + (tmpBpendTime - tmpBpStartTime));
-
-                     */
-
-
-                    //从Bitmap中获取字节流
+                    //ByteBuffer buffer = ByteBuffer.allocate(tmp.getByteCount());
+                    //tmp.copyPixelsToBuffer(buffer);
+                    //byte[] argbArray = buffer.array();
 
                     tmpBpStartTime = System.currentTimeMillis();
-
-                    //1.获取原始ARGB字节流
 
                     //2.Y分量和UV分量
-                    byte[] yuvData = new byte[width*height*3/2];
                     byte[]  ybuffer = new byte[aWidth * height];//用于保存y分量数据
-                    byte[] ubuffer = new byte[aWidth * height /4];
-                    byte[] vbuffer = new byte[aWidth * height /4];
                     byte[]  uvbuffer=new byte[width * height/2];//用于保存uv分量数据
 
                     /*
+                    //bitmap is no needed anymore because we use the byte from ImageReader directly
                     Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.mipmap.bg);
                     int w = bitmap.getWidth();
                     int h = bitmap.getHeight();
@@ -710,56 +691,30 @@ public class ScreenShareActivity extends AbsActivity<ScreenShareControl, ScreenS
                     bitmap.copyPixelsToBuffer(buffer);
                      */
 
-                    Log.e("TAG","hello rgbaToI420 begin");
+                    Log.e("TAG","junhong ARGBToNV21 begin");
                     tmpBpStartTime = System.currentTimeMillis();
-                    ImageFormatUtils.ARGBToNV21(argbArray,aStride, width, height, ybuffer,uvbuffer); //色差fixed
+                    //使用libyuv库，ARGB转NV21 格式,颜色异常;NV21是YUV420SP的一种,排列是YYY...VUVU...
+                    ImageFormatUtils.ARGBToNV21(rgbaArray,aStride, width, height, ybuffer,uvbuffer); //色差fixed
                     tmpBpendTime = System.currentTimeMillis();
                     Log.e("TAG","--junhong ARGBToNV21 take time: " + (tmpBpendTime- tmpBpStartTime));
-                    //RGBA to I420: YY...UU...VV...
 
                     //ImageFormatUtils.RgbaToI420(Key.RGBA_TO_I420, buffer.array(), yuvData,w, h);
                     //ImageFormatUtils.RgbaToI420(Key.RGBA_TO_I420, imgBuffer.array(), yuvData,width, tmp.getHeight());
-                    Log.e("TAG","hello rgbaToI420 end");
+                    Log.e("TAG","hello ARGBToNV21 end");
 
 
-                    byte[] frameBuffer = new byte[aWidth*height*3/2];
-                    System.arraycopy(ybuffer,0,frameBuffer,0,width*height);
-                    System.arraycopy(uvbuffer,0,frameBuffer,width*height,width*height/2);
-
-                    //System.arraycopy(ybuffer,0,frameBuffer,0,aWidth*height);
-                    //System.arraycopy(ubuffer,0,frameBuffer,aWidth*height,aWidth*height/4);
-                    //System.arraycopy(vbuffer,0,frameBuffer,aWidth*height*5/4,aWidth*height/4);
-
+                    byte[] frameBuffer = new byte[aWidth * height * 3/2];
+                    System.arraycopy(ybuffer,0,frameBuffer,0,width * height);
+                    System.arraycopy(uvbuffer,0,frameBuffer,width * height,width * height/2);
 
                     lastData = frameBuffer;
 
-                    //将yuv写到文件中
-
+                    //将yuv写到文件中,仅用于测试.可删除
                     try {
                         writeBytesToFile(lastData);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
-
-
-
-                    //使用libyuv库，ARGB转NV21 格式,颜色异常;NV21是YUV420SP的一种,排列是YYY...VUVU...
-                    /*
-                    tmpBpStartTime = System.currentTimeMillis();
-                    //ImageFormatUtils.ARGBToNV21(byteArray, w*4, w, h, ybuffer, uvbuffer);
-                    tmpBpendTime = System.currentTimeMillis();
-                    Log.e("TAG","--end jni ARGBToNV21: " + (tmpBpendTime - tmpBpStartTime));
-                    byte[] frameBuffer=new byte[w*h*3/2];
-                    System.arraycopy(ybuffer,0,frameBuffer,0,w*h);
-                    System.arraycopy(uvbuffer,0,frameBuffer,w*h,w*h/2);
-
-                     */
-
-                    //lastData = yuvData; //YUV数据
-//                  tmpBpendTime = System.currentTimeMillis();
-                    //lastData = ImageUtils.fetchNV21(sendBitmap); //takes time: 100ms
-
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -778,7 +733,6 @@ public class ScreenShareActivity extends AbsActivity<ScreenShareControl, ScreenS
 //                        }
 //                    }
                     image.close();
-                    Log.e("TAG", "hello image was closed");
                 }
                 try {
                     Thread.sleep(60);

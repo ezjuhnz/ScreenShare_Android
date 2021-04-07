@@ -26,12 +26,6 @@
 #define BGR_YUV420P     0x00013210
 
 //实现打印
-#define  LOG    "JavaCallCDemoLog" // 这个是自定义的LOG的标识
-#define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG,__VA_ARGS__) // 定义LOGD类型
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG,__VA_ARGS__) // 定义LOGI类型
-#define  LOGW(...)  __android_log_print(ANDROID_LOG_WARN,LOG,__VA_ARGS__) // 定义LOGW类型
-#define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG,__VA_ARGS__) // 定义LOGE类型
-#define LOGF(...)  __android_log_print(ANDROID_LOG_FATAL,LOG,__VA_ARGS__) // 定义LOGF类型
 
 //定义数据类型别名
 typedef unsigned int uint32;
@@ -220,6 +214,11 @@ JNIEXPORT void JNICALL Java_com_cmbc_av_jni_ImageFormatUtils_ARGBToNV21
     (*env)->ReleaseByteArrayElements(env, src_argb, (jbyte*)srcFrame, 0);
     (*env)->ReleaseByteArrayElements(env, ybuffer, (jbyte*)dst_y, 0);
     (*env)->ReleaseByteArrayElements(env, uvbuffer, (jbyte*)dst_uv, 0);
+    if(dst_bgra != NULL)
+    {
+        free(dst_bgra);
+        dst_bgra = NULL;
+    }
 }
 
 JNIEXPORT void JNICALL Java_com_cmbc_av_jni_ImageFormatUtils_ARGBIntToNV21
