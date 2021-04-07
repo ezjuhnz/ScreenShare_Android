@@ -616,6 +616,7 @@ public class ScreenShareActivity extends AbsActivity<ScreenShareControl, ScreenS
 //                        }
                     }
                 } else {
+
                     long tmpBpStartTime = System.currentTimeMillis();
 
                     final Image.Plane[] planes = image.getPlanes();
@@ -625,8 +626,7 @@ public class ScreenShareActivity extends AbsActivity<ScreenShareControl, ScreenS
 
                     //将image数据放到byte[]中
                     byte[] rgbaArray = new byte[imgBuffer.capacity()];
-                    //imgBuffer.get(rgbaArray); //将ByteBuffer中的数据copy到byte[]中
-
+                    //imgBuffer.get(rgbaArray); //将ByteBuffer中的数据copy到byte[]
                     int pixelStride = planes[0].getPixelStride();//相邻像素之间的间隔,大小为bytesPerPixel
                     int rowStride = planes[0].getRowStride();    //两行开始像素之间的间隔,大小: width*bytesPerPixel
                     Log.e("TAG", "hello pixelStride,rowStride=" + pixelStride + "," + rowStride);
@@ -648,7 +648,7 @@ public class ScreenShareActivity extends AbsActivity<ScreenShareControl, ScreenS
                     //bitmap等比例压缩并添加底色,no longer needed
                     //sendBitmap = ImageUtils.zoomBitmap4Color(Color.WHITE, tmp, getControl().getAnychat().videoWidth, getControl().getAnychat().videoHeight);
                     long tmpBpendTime = System.currentTimeMillis();
-                    Log.e(TAG, "hello width = " + width);//takes time 20 ms
+                    Log.e(TAG, "bitmap takes time = " + (tmpBpendTime- tmpBpStartTime));//takes time 20 ms
 
 
                     //将bitmap保存成文件
@@ -711,8 +711,10 @@ public class ScreenShareActivity extends AbsActivity<ScreenShareControl, ScreenS
                      */
 
                     Log.e("TAG","hello rgbaToI420 begin");
-                    ImageFormatUtils.ARGBToNV21(argbArray,aStride, width, height, ybuffer,uvbuffer); //色差
-
+                    tmpBpStartTime = System.currentTimeMillis();
+                    ImageFormatUtils.ARGBToNV21(argbArray,aStride, width, height, ybuffer,uvbuffer); //色差fixed
+                    tmpBpendTime = System.currentTimeMillis();
+                    Log.e("TAG","--junhong ARGBToNV21 take time: " + (tmpBpendTime- tmpBpStartTime));
                     //RGBA to I420: YY...UU...VV...
 
                     //ImageFormatUtils.RgbaToI420(Key.RGBA_TO_I420, buffer.array(), yuvData,w, h);
