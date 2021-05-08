@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/login"
+                android:layout_width="wrap_content"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:text="登录" />
+
+            <EditText
+                android:id="@+id/roomId"
+                android:layout_width="wrap_content"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:hint="房间id"
+                android:inputType="number" />
+
+            <Button
+                android:id="@+id/enterRoom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="进1房间" />
+
+            <Button
+                android:id="@+id/openLocalCamera"
+                android:layout_width="wrap_content"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:text="打开本地摄像头" />
+
+            <Button
+                android:id="@+id/openLocalScreenShare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="开始" />
+
+            <Button
+                android:id="@+id/scaleSupport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="缩放" />
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/resolution_list"
+                />
+            <Button
+                android:id="@+id/rotateSupport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="旋转" />
+
+            <EditText
+                android:id="@+id/remoteId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:hint="远程id"
+                android:inputType="number" />
+
+            <Button
+                android:id="@+id/openRemoteVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="打开远程视频" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="400px"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="200px"
+                android:layout_height="400px"
+                android:background="#f00" />
+
+            <ImageView
+                android:layout_width="200px"
+                android:layout_height="400px"
+                android:background="#0f0" />
+
+            <ImageView
+                android:layout_width="200px"
+                android:layout_height="400px"
+                android:background="#00f" />
+
+            <ImageView
+                android:layout_width="200px"
+                android:layout_height="400px"
+                android:background="#ff0" />
+
+            <ImageView
+                android:layout_width="200px"
+                android:layout_height="400px"
+                android:background="#0ff" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="400px"
+            android:orientation="vertical"
+            android:layout_height="400px">
+
+            <EditText
+                android:id="@+id/color_red"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="#ff0000"
+                android:hint="红色:0-255"
+                android:inputType="number" />
+            <EditText
+                android:id="@+id/color_green"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="#00ff00"
+                android:hint="绿色:0-255"
+                android:inputType="number" />
+            <EditText
+                android:id="@+id/color_blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="#0000ff"
+                android:hint="蓝色:0-255"
+                android:inputType="number" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/screenImg"
+            android:layout_width="400px"
+            android:layout_height="600px"
+            android:background="#f0f"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:scaleType="fitCenter" />
+    </RelativeLayout>
+
+</LinearLayout>

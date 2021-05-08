@@ -1,0 +1,9 @@
+<resources>
+    <string-array name="resolution_list">
+        <item>不缩放(默认)</item>
+        <item>720*1520</item>
+        <item>1280*720</item>
+        <item>640*480</item>
+        <item>360*760</item>
+    </string-array>
+</resources>

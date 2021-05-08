@@ -1,0 +1,79 @@
+apply plugin: 'com.android.application'
+//apply plugin: 'com.android.library'
+android {
+    compileSdkVersion 30 //30 addons_list-3.xml IOException
+    buildToolsVersion "30.0.3"
+
+
+    defaultConfig {
+
+        minSdkVersion 22
+        targetSdkVersion 22 //22
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+                abiFilters 'armeabi-v7a','arm64-v8a'
+            }
+            //编译静态库yuvHelper
+//            cmake {
+//                //arguments '-DANDROID_PLATFORM=android-14','-DANDROID_TOOLCHIAN=clang'
+//                targets 'yuvHelper'
+//            }
+        }
+
+
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    //sourceSets { main { jni.srcDirs = ['src/main/jni'] } }
+
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+            version "3.10.2"
+        }
+    }
+
+
+}
+
+dependencies {
+    //compileOnly rootProject.ext.dependencies["support:design"]
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    //implementation "support:support-v4"
+    //implementation "support:appcompat-v7"
+
+    //implementation "support:support-annotations"
+    implementation 'io.reactivex.rxjava2:rxjava:2.0.1'
+    //implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    //implementation 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
+    //rxpermissions
+    implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'
+    //implementation files('libs/cmbc_android_framework-release-20190830.aar')
+    //implementation files('libs/RxPermissions.jar')
+//    implementation files('libs/classes.jar')
+}
+
+task makeJar(type: Jar){
+    baseName 'colorFormatUtils'
+    from('build/intermediates/javac/debug/classes/')
+    exclude('xyz/', 'com/bairuitech/')
+    exclude('com/cmbc/av/activity/','com/cmbc/av/base/', 'com/cmbc/av/bean/', 'com/cmbc/av/common/','com/cmbc/av/service/','com/cmbc/av/utils/')
+    exclude('com/cmbc/av/tools/')
+    exclude('test/','BuildConfig.class','R.class')
+    exclude('com/cmbc/av/SDKConfig.class','com/cmbc/av/Key.class')
+    exclude('com/Myapp.class')
+    exclude{it.name.startsWith('R$')}
+}
